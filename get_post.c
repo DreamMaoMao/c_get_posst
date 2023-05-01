@@ -198,11 +198,6 @@ sprintf(request + strlen(request), "Content-Type: %s%s", "application/x-www-form
 
 // 定义一个主函数，用于测试
 int main(int argc, char *argv[]) {
-    // 检查命令行参数是否正确
-    if (argc < 3) {
-        printf("Usage: %s url params\n", argv[0]);
-        return 1;
-    }
     // 获取请求方法
     char * method = argv[1];
 
@@ -217,7 +212,16 @@ int main(int argc, char *argv[]) {
     // 调用函数发送HTTP POST请求，并打印响应结果
     // GET方法把下面的HTTP_POST改成HTTP_GET
     // POST请求的Conten-Type默认是application/x-www-form-urlencoded
-    char *response = sendHttpRequest(method, url, params);
+    char *re_method;
+    if (strcmp(method,"GET") || strcmp(method,"get")) {
+        re_method = "GET";
+    } else if (strcmp(method,"POST") || strcmp(method,"post")) {
+        re_method = "GET";
+    } else {
+        perror("Invalid HTTP method");
+        exit(1);
+    }
+    char *response = sendHttpRequest(re_method, url, params);
     printf("%s\n", response);
 
     free(response);
