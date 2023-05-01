@@ -217,7 +217,7 @@ int main(int argc, char *argv[]) {
     if (strcmp(method,"GET") || strcmp(method,"get")) {
         re_method = "GET";
     } else if (strcmp(method,"POST") || strcmp(method,"post")) {
-        re_method = "GET";
+        re_method = "POST";
     } else {
         perror("Invalid HTTP method");
         exit(1);
