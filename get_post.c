@@ -103,8 +103,10 @@ char *sendHttpRequest(char *method, char *url, char *params) {
     } else if (strcmp(method, HTTP_POST) == 0) {
         // 如果是POST方法，需要把参数的长度写到请求头中
         sprintf(request, "%s %s %s%s", HTTP_POST, u.path, HTTP_VERSION, CRLF);
-        sprintf(request + strlen(request), "Content-Length: %ld%s", strlen(params), CRLF);
-sprintf(request + strlen(request), "Content-Type: %s%s", "application/x-www-form-urlencoded", CRLF);
+        if (params != NULL){
+            sprintf(request + strlen(request), "Content-Length: %ld%s", strlen(params), CRLF);
+        }
+        sprintf(request + strlen(request), "Content-Type: %s%s", "application/x-www-form-urlencoded", CRLF);
     } else {
         // 如果既不是GET也不是POST，抛出异常
         perror("Invalid HTTP method");
@@ -119,7 +121,7 @@ sprintf(request + strlen(request), "Content-Type: %s%s", "application/x-www-form
     sprintf(request + strlen(request), "%s", CRLF);
 
     // 如果是POST方法，还需要拼接请求体，即参数
-    if (strcmp(method, HTTP_POST) == 0) {
+    if (strcmp(method, HTTP_POST) == 0 && params != NULL ) {
         sprintf(request + strlen(request), "%s", params,CRLF);
     }
 
@@ -201,22 +203,26 @@ sprintf(request + strlen(request), "Content-Type: %s%s", "application/x-www-form
 int main(int argc, char *argv[]) {
     // 获取请求方法
     char * method = argv[1];
-
     // 从命令行参数中获取URL字符串
     char *url = argv[2];
     // 从命令行参数中获取参数字符串
     char *params = argv[3];
+
+    // 调试专用
     // 定义一个URL字符串
-    // char *url = "http://127.0.0.1/";
-    // // 定义一个参数字符串
-    // char *params = "name=bing&message=hello";
+    // char *url = "http://192.168.0.109/";
+    // char *method = "post";
+    // // // 定义一个参数字符串
+    // char *params = "name=jj&key=kk";
+
+
     // 调用函数发送HTTP POST请求，并打印响应结果
     // GET方法把下面的HTTP_POST改成HTTP_GET
     // POST请求的Conten-Type默认是application/x-www-form-urlencoded
     char *re_method;
-    if (strcmp(method,"GET") || strcmp(method,"get")) {
+    if (strcmp(method,"GET") == 0 || strcmp(method,"get") == 0) {
         re_method = "GET";
-    } else if (strcmp(method,"POST") || strcmp(method,"post")) {
+    } else if (strcmp(method,"POST") == 0 || strcmp(method,"post") == 0) {
         re_method = "POST";
     } else {
         perror("Invalid HTTP method");
