@@ -11,6 +11,7 @@
 #define HTTP_POST "POST"
 #define HTTP_VERSION "HTTP/1.1"
 #define CRLF "\r\n" // 回车换行符
+#define BUFFER_LEN 40960 //返回体接受的缓冲区长度，太小接受不了过长的返回
 
 // 定义一个函数，根据请求方法、URL和参数发送HTTP请求，并返回响应结果
 char *sendHttpRequest(char *method, char *url, char *params) {
@@ -126,7 +127,7 @@ sprintf(request + strlen(request), "Content-Type: %s%s", "application/x-www-form
     write(sock, request, strlen(request));
 
     //定义缓冲区长度
-    int buffer_len= 4096;
+    int buffer_len= BUFFER_LEN;
 
     // 创建一个字符串缓冲区，用于存储响应报文
     char *response = malloc(buffer_len + 1); // 分配22个字节的空间，多出一个字节用来存储'\0'
