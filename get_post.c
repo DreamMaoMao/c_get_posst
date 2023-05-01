@@ -29,8 +29,11 @@ char *sendHttpRequest(char *method, char *url, char *params) {
     char *new_url = malloc(url_len + 1); // 分配字符串空间用于分割，多出一个字节用来存储'\0'
     strcpy(new_url, url); // 复制url到new_url
     
+    //获取协议名
     char *token = strtok(new_url, ":/"); // 按照:和/分割
     u.protocol = token; // 第一个分割出来的是协议
+
+    //获取主机名
     token = strtok(NULL, ":/"); // 再次分割
     if (strcmp(token, "") == 0) { // 如果分割出来的是空字符串，说明有//
         token = strtok(NULL, ":/"); // 再次分割
@@ -38,7 +41,29 @@ char *sendHttpRequest(char *method, char *url, char *params) {
     } else {
         u.host = token; // 否则直接是主机名
     }
-    token = strtok(NULL, ":/"); // 再次分割
+
+    //获取uri路径   
+    token = strtok(NULL, ":/"); // 
+    char *tmp_path = malloc(url_len + 1); // 分配字符串空间用于分割，多出一个字节用来存储'\0'
+
+    if (token == NULL){
+        u.path="/";
+    }else {
+        // char tmp_path[1024];
+        while (token != NULL)
+        {
+            sprintf(tmp_path + strlen(tmp_path), "/%s", token);
+            token = strtok(NULL, ":/");
+        }
+        u.path = tmp_path;
+    }
+
+    //获取端口号
+    char *new_tmp_url = malloc(url_len + 1); // 分配字符串空间用于分割，多出一个字节用来存储'\0'
+    strcpy(new_tmp_url, url); // 复制url到new_url
+    token = strtok(new_tmp_url, ":"); // 按照:和/分割
+    token = strtok(NULL, ":"); // 再次分割
+    token = strtok(NULL, ":"); // 再次分割
     if (token == NULL) { // 如果没有分割出来，说明没有指定端口号
         if (strcmp(u.protocol, "http") == 0) { // 如果协议是http，默认端口为80
             u.port = 80;
@@ -48,17 +73,11 @@ char *sendHttpRequest(char *method, char *url, char *params) {
             perror("Invalid protocol");
             exit(1);
         }
-        u.path = "/"; // 路径默认为/
     } else {
         u.port = atoi(token); // 否则把分割出来的字符串转换成整数作为端口号
-        // u.port = 80;
-        token = strtok(NULL, ":/"); // 再次分割
-        if (token == NULL) { // 如果没有分割出来，说明没有指定路径
-            u.path = "/"; // 路径默认为/
-        } else {
-            u.path = token; // 否则把分割出来的字符串作为路径
-        }
     }
+
+
     // 创建一个Socket对象，连接到指定的主机和端口
     int sock = socket(AF_INET, SOCK_STREAM, 0); // 创建一个IPv4的TCP套接字
     if (sock < 0) { // 如果创建失败，抛出异常
@@ -89,8 +108,13 @@ char *sendHttpRequest(char *method, char *url, char *params) {
     memset(request, 0, sizeof(request)); // 初始化为0
 
 
-    int path_len = strlen(u.path); // len = 21
-    char *new_path = malloc(path_len + 1); // 分配22个字节的空间，多出一个字节用来存储'\0'
+    int path_len = strlen(u.path); // len = 
+    int params_len = 0;
+    if (params != NULL){
+        params_len =strlen(params);
+    }
+    
+    char *new_path = malloc(path_len + params_len + 1); // 分配22个字节的空间，多出一个字节用来存储'\0'
     strcpy(new_path, u.path); // 复制url到new_url
     // 根据请求方法的不同，拼接不同的请求行
     if (strcmp(method, HTTP_GET) == 0) {
@@ -192,9 +216,10 @@ char *sendHttpRequest(char *method, char *url, char *params) {
 
     // 关闭套接字
     close(sock);
-    free(new_url); //释放用于分割字符串的内存    
-    free(new_path); //释放用于分割字符串的内存    
-
+    free(new_url); //释放用于分割协议和host的内存    
+    free(new_path); //释放用于拼接uri和参数的内存  
+    free(new_tmp_url);// 释放用于分割端口号的内存  
+    free(tmp_path); //释放用于分割uri的内存
     // 返回响应报文
     return response;
 }
@@ -202,19 +227,11 @@ char *sendHttpRequest(char *method, char *url, char *params) {
 // 定义一个主函数，用于测试
 int main(int argc, char *argv[]) {
     // 获取请求方法
-    char * method = argv[1];
-    // 从命令行参数中获取URL字符串
+    char *method = argv[1];
+    // // 从命令行参数中获取URL字符串
     char *url = argv[2];
-    // 从命令行参数中获取参数字符串
+    // // 从命令行参数中获取参数字符串
     char *params = argv[3];
-
-    // 调试专用
-    // 定义一个URL字符串
-    // char *url = "http://192.168.0.109/";
-    // char *method = "post";
-    // // // 定义一个参数字符串
-    // char *params = "name=jj&key=kk";
-
 
     // 调用函数发送HTTP POST请求，并打印响应结果
     // GET方法把下面的HTTP_POST改成HTTP_GET
@@ -228,7 +245,7 @@ int main(int argc, char *argv[]) {
         perror("Invalid HTTP method");
         exit(1);
     }
-    char *response = sendHttpRequest(re_method, url, params);
+    char *response = sendHttpRequest(re_method,url, params);
     printf("%s\n", response);
 
     free(response);
