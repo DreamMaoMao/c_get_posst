@@ -22,7 +22,7 @@
 直接gcc -o c_get_post.c -o getPost
 
 ### get
-getPost GET http://127.0.01/hello "name=test&message=hello"
+getPost get http://127.0.01/hello "name=test&message=hello"
 
 ### post
-getPost GET http://127.0.01/hello "name=test&message=hello"
+getPost post http://127.0.01/hello "name=test&message=hello"
