@@ -42,6 +42,7 @@ int sendHttpRequest(char *method, char *url, char *params,char *response,char *e
     if ((token == NULL) || (strcmp(token,"http") != 0 && strcmp(token,"https")!=0)  ){
         char *err = "Invalid URL";
         strcpy(err_message,err);
+        free(url_cut_host_protocol_buffer); //释放用于分割协议和host的内存    
         return 1;
     }
     u.protocol = token; // 第一个分割出来的是协议
@@ -85,6 +86,9 @@ int sendHttpRequest(char *method, char *url, char *params,char *response,char *e
         } else { // 否则抛出异常
             char *err = "Invalid Protocol";
             strcpy(err_message,err);
+            free(url_cut_host_protocol_buffer); //释放用于分割协议和host的内存    
+            free(url_cut_port_buffer);// 释放用于分割端口号的内存  
+            free(path_cut_uri_buffer); //释放用于分割uri的内存
             return 1;
         }
     } else {
@@ -97,6 +101,9 @@ int sendHttpRequest(char *method, char *url, char *params,char *response,char *e
     if (sock < 0) { // 如果创建失败，抛出异常
         char *err ="socket error";
         strcpy(err_message,err);
+        free(url_cut_host_protocol_buffer); //释放用于分割协议和host的内存    
+        free(url_cut_port_buffer);// 释放用于分割端口号的内存  
+        free(path_cut_uri_buffer); //释放用于分割uri的内存
         return 1;
     }
 
@@ -109,6 +116,9 @@ int sendHttpRequest(char *method, char *url, char *params,char *response,char *e
     if (host == NULL) { // 如果获取失败，抛出异常
         char *err = "gethostbyname error";
         strcpy(err_message,err);
+        free(url_cut_host_protocol_buffer); //释放用于分割协议和host的内存    
+        free(url_cut_port_buffer);// 释放用于分割端口号的内存  
+        free(path_cut_uri_buffer); //释放用于分割uri的内存
         return 1;
     }
 
@@ -117,6 +127,9 @@ int sendHttpRequest(char *method, char *url, char *params,char *response,char *e
     if (connect(sock, (struct sockaddr *)&server_addr, sizeof(server_addr)) < 0) { // 连接到服务器，如果失败，抛出异常
         char *err = "connect error";
         strcpy(err_message,err);
+        free(url_cut_host_protocol_buffer);
+        free(path_cut_uri_buffer);
+        free(url_cut_port_buffer);
         return 1;
         }
 
@@ -152,6 +165,10 @@ int sendHttpRequest(char *method, char *url, char *params,char *response,char *e
         // 如果既不是GET也不是POST，抛出异常
         char *err ="Invalid HTTP method";
         strcpy(err_message,err);
+        free(url_cut_host_protocol_buffer);
+        free(path_cut_uri_buffer);
+        free(url_cut_port_buffer);
+        free(path_with_params_buffer);
         return 1;
     }
 
@@ -188,6 +205,10 @@ int sendHttpRequest(char *method, char *url, char *params,char *response,char *e
         if (bytes < 0) { // 如果读取失败，抛出异常
             char *err = "read error";
             strcpy(err_message,err);
+            free(url_cut_host_protocol_buffer);
+            free(path_cut_uri_buffer);
+            free(url_cut_port_buffer);
+            free(path_with_params_buffer);
             return 1;
         } else if (bytes == 0) { // 如果读取到末尾，跳出循环
             break;

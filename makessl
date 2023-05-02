@@ -1,0 +1,17 @@
+# 安装openssl
+wget https://www.openssl.org/source/openssl-1.1.1t.tar.gz
+tar xvf openssl-1.1.1t.tar.gz
+cd openssl-1.1.1t
+mkdir /home/wrq/openssl
+./Configure linux-generic32 no-asm shared no-async --prefix=/home/wrq/openssl CROSS_COMPILE=arm-linux- CC=gcc -D_XOPEN_SOURCE=700
+make
+sudo su
+make install
+
+编译
+arm-linux-gcc -o getpost get_post_with_ssl.c  -I/home/wrq/openssl/include/ -lssl -lcrypto  -ldl -L/home/wrq/openssl/lib
+
+
+把/home/wrq/openssl/lib 下的所有文件拷贝到嵌入式系统的/lib下
+
+注意嵌入系统linux内核必需启动/dev/random 字符随机数设备,不然ssl没办法正常工作
