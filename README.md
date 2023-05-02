@@ -24,6 +24,10 @@
 ### get
 getPost get http://127.0.01/hello "name=test&message=hello"
 
+or
+
+getPost get http://127.0.01/hello/?name=test&message=hello
+
 ### post
 getPost post http://127.0.01/hello "name=test&message=hello"
 
