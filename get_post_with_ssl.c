@@ -79,6 +79,7 @@ int sendHttpRequest(char *method, char *url, char *params,char *response,char *e
     // 使用strtok函数分割URL字符串
     int url_len = strlen(url); // 计算url字符串的长度
     char *url_cut_host_protocol_buffer = malloc(url_len + 1); // 分配字符串空间用于分割，多出一个字节用来存储'\0'
+    memset(url_cut_host_protocol_buffer, 0, sizeof(url_cut_host_protocol_buffer)); // 初始化为0
     strcpy(url_cut_host_protocol_buffer, url); //复制url的值到url字符切割缓冲区
     
     //获取协议名
@@ -103,6 +104,7 @@ int sendHttpRequest(char *method, char *url, char *params,char *response,char *e
     token = strtok(NULL, ":/"); //继续切割
     char *path_cut_uri_buffer; //如果uri路径不是'/',就定义切割缓冲区
     path_cut_uri_buffer = malloc(url_len + 1); // 分配字符串空间用于分割，多出一个字节用来存储'\0'
+    memset(path_cut_uri_buffer, 0, sizeof(path_cut_uri_buffer)); // 初始化为0
 
     if (token == NULL){
         u.path="/";
@@ -117,6 +119,7 @@ int sendHttpRequest(char *method, char *url, char *params,char *response,char *e
 
     //获取端口号
     char *url_cut_port_buffer = malloc(url_len + 1); // 分配字符串空间用于分割，多出一个字节用来存储'\0'
+    memset(url_cut_port_buffer, 0, sizeof(url_cut_port_buffer)); // 初始化为0
     strcpy(url_cut_port_buffer, url); // 复制path到字符切割缓冲区
     token = strtok(url_cut_port_buffer, ":"); // 按照:分割
     token = strtok(NULL, ":"); // 再次分割
@@ -220,6 +223,7 @@ int sendHttpRequest(char *method, char *url, char *params,char *response,char *e
     }
     
     char *path_with_params_buffer = malloc(path_len + params_len + 1); // 分配22个字节的空间，多出一个字节用来存储'\0'
+    memset(path_with_params_buffer, 0, sizeof(path_with_params_buffer)); // 初始化为0
     strcpy(path_with_params_buffer, u.path); // 复制path值到带参路径拼接缓冲区
     // 根据请求方法的不同，拼接不同的请求行
     if (strcmp(method, HTTP_GET) == 0) {
@@ -401,7 +405,7 @@ int sendHttpRequest(char *method, char *url, char *params,char *response,char *e
 // 定义一个主函数，用于测试
 int main(int argc, char *argv[]) {
     // 测试用
-    // char *url = "https://www.baidu.com/";
+    // char *url = "https://www.baidu.com/s";
     // char *method = "get";
     // char *params = NULL;
     init_ssl();
@@ -415,6 +419,8 @@ int main(int argc, char *argv[]) {
     char response[BUFFER_LEN + 1];
     //定义错误信息返回
     char err_message[50];
+    memset(err_message, 0, sizeof(err_message)); // 初始化为0
+
     // 调用函数发送请求，并打印响应结果
     // POST请求的Conten-Type默认是application/x-www-form-urlencoded
     // 支持命令行传入请求方法的大小写

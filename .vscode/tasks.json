@@ -1,0 +1,33 @@
+{
+    "tasks": [
+        {
+            "type": "cppbuild",
+            "label": "g++.exe build active file",
+            "command": "/usr/bin/gcc",
+            "args": [
+                "-o",
+                "${fileDirname}/${fileBasenameNoExtension}",
+                "${file}",
+                "-I/home/wrq/86openssl/include/",
+                "-lssl",
+                "-lcrypto",
+                "-ldl",
+                "-L/home/wrq/86openssl/lib",
+                "-g",
+                "-fdiagnostics-color=always"
+            ],
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "调试器生成的任务。"
+        }
+    ],
+    "version": "2.0.0"
+}
