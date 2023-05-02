@@ -58,10 +58,11 @@ int sendHttpRequest(char *method, char *url, char *params,char *response,char *e
     //获取uri路径   
     token = strtok(NULL, ":/"); //继续切割
     char *path_cut_uri_buffer; //如果uri路径不是'/',就定义切割缓冲区
+    path_cut_uri_buffer = malloc(url_len + 1); // 分配字符串空间用于分割，多出一个字节用来存储'\0'
+
     if (token == NULL){
         u.path="/";
     }else {
-        path_cut_uri_buffer = malloc(url_len + 1); // 分配字符串空间用于分割，多出一个字节用来存储'\0'
         while (token != NULL) //循环切割路径
         {
             sprintf(path_cut_uri_buffer + strlen(path_cut_uri_buffer), "/%s", token); //拼接路径
@@ -232,6 +233,7 @@ int sendHttpRequest(char *method, char *url, char *params,char *response,char *e
     free(path_with_params_buffer); //释放用于拼接uri和参数的内存  
     free(url_cut_port_buffer);// 释放用于分割端口号的内存  
     free(path_cut_uri_buffer); //释放用于分割uri的内存
+
     // 返回结果
     return 0;
 }
@@ -239,7 +241,7 @@ int sendHttpRequest(char *method, char *url, char *params,char *response,char *e
 // 定义一个主函数，用于测试
 int main(int argc, char *argv[]) {
     // 测试用
-    // char *url = "sfdsf";
+    // char *url = "http://fjisu.vip";
     // char *method = "get";
     // char *params = NULL;
 
@@ -268,7 +270,7 @@ int main(int argc, char *argv[]) {
     if (ok == 0) {
         printf("%s\n", response);
     } else {
-        printf("请求失败:%s",err_message);
+        printf("请求失败:%s\n",err_message);
     }
     
     return 0;
