@@ -26,3 +26,35 @@ getPost get http://127.0.01/hello "name=test&message=hello"
 
 ### post
 getPost post http://127.0.01/hello "name=test&message=hello"
+
+# ssl支持
+# 安装openssl 注意旧设备和没有/dev/random的设备一定要用这个版本
+```
+由于我的嵌入式板子内核没有把/dev/random放进去,我增加了自定义随机数
+到下一版本 就强制用这个/dev/random真随机数了
+
+我代码上改成了自己生成的随机数，1.1.0版本ssl的公钥证书已经不可用
+1.1.1.d又自定义不了随机数，所以我卡了1.1.c版本的
+
+wget https://www.openssl.org/source/old/1.1.1/openssl-1.1.1c.tar.gz
+
+tar xvf openssl-1.1.1t.tar.gz
+
+cd openssl-1.1.1t
+
+mkdir /home/user/openssl
+
+./Configure linux-generic32 no-asm shared no-async --prefix=/home/user/openssl CROSS_COMPILE=arm-linux- CC=gcc -D_XOPEN_SOURCE=700
+
+make -j4
+
+sudo su
+
+make install
+
+编译
+arm-linux-gcc -o getpost get_post_with_ssl.c  -I/home/user/openssl/include/ -lssl -lcrypto  -ldl -L/home/user/openssl/lib
+
+
+把/home/user/openssl/lib 下的所有文件拷贝到嵌入式系统的/lib下
+```

@@ -1,6 +1,6 @@
 // 支持ssl版本
 
-
+#include <openssl/rand.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -11,6 +11,8 @@
 #include <stdbool.h>
 #include <openssl/ssl.h>
 #include <openssl/err.h>
+#include <openssl/aes.h>
+#include <openssl/ec.h>
 // 你需要定义一个SSL_CTX的全局变量，用来初始化SSL连接
 SSL_CTX *ctx;
 
@@ -29,6 +31,13 @@ void init_ssl()
     SSL_library_init();
     OpenSSL_add_all_algorithms();
     SSL_load_error_strings();
+
+    // 定义一个包含随机数据的缓冲区作为ssl加密随机数
+    static const char rnd_seed[] = "string to make the random number generator think it has entropy";
+	// 生成随机数
+    RAND_seed(rnd_seed, sizeof rnd_seed);		
+
+
     // 创建一个SSL_CTX对象，使用SSLv23_client_method方法
     ctx = SSL_CTX_new(SSLv23_client_method());
     if(ctx == NULL)
