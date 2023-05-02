@@ -27,20 +27,19 @@ getPost get http://127.0.01/hello "name=test&message=hello"
 ### post
 getPost post http://127.0.01/hello "name=test&message=hello"
 
-# ssl支持
-# 安装openssl 注意旧设备和没有/dev/random的设备一定要用这个版本
+# ssl支持版本支持 需要编译安装openssl库拷贝到板子，运行和编译都要用到(旧设备和没有/dev/random也可用)
 ```
 由于我的嵌入式板子内核没有把/dev/random放进去,我增加了自定义随机数
 到下一版本 就强制用这个/dev/random真随机数了
 
 我代码上改成了自己生成的随机数，1.1.0版本ssl的公钥证书已经不可用
-1.1.1.d又自定义不了随机数，所以我卡了1.1.c版本的
+1.1.1.d又自定义不了随机数，所以我卡了1.1.1c版本的
 
 wget https://www.openssl.org/source/old/1.1.1/openssl-1.1.1c.tar.gz
 
-tar xvf openssl-1.1.1t.tar.gz
+tar xvf openssl-1.1.1c.tar.gz
 
-cd openssl-1.1.1t
+cd openssl-1.1.1c
 
 mkdir /home/user/openssl
 
