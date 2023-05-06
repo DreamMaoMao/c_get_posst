@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "ssl.h": "c"
+        "ssl.h": "c",
+        "gp.h": "c"
     }
 }

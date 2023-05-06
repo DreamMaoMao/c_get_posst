@@ -19,17 +19,21 @@
 > gcc3(arm)
 
 ## 用法
-直接gcc -o c_get_post.c -o getPost
+gcc -o gp gp.c  -I/home/usr/openssl/include/ -lssl -lcrypto  -ldl -L/home/usr/openssl/li
 
 ### get
-getPost get http://127.0.01/hello "name=test&message=hello"
+gp get http://127.0.01/hello "name=test&message=hello" h
 
 or
 
-getPost get http://127.0.01/hello/?name=test&message=hello
+gp get http://127.0.01/hello/?name=test&message=hello h
+
+or 
+
+gp get http://127.0.01/hello/?name=test&message=hello "" h
 
 ### post
-getPost post http://127.0.01/hello "name=test&message=hello"
+gp post http://127.0.01/hello "name=test&message=hello" h
 
 # ssl支持版本支持 需要编译安装openssl库拷贝到板子，运行和编译都要用到(旧设备和没有/dev/random也可用)
 ```
