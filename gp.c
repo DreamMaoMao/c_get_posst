@@ -330,18 +330,18 @@ int sendHttpRequest(char *method, char *url, char *params,GP_HTTP_RESPONSE *res,
 // 定义一个主函数，用于测试
 int main(int argc, char *argv[]) {
     // 测试用
-    char *url = "https://www.baidu.com/";
-    char *method = "get";
-    char *params = "h";
-    char *content = NULL;    
+    // char *url = "https://www.baidu.com/";
+    // char *method = "get";
+    // char *params = "h";
+    // char *content = NULL;    
     //获取请求方法
-    // char *method = argv[1];
-    // // 从命令行参数中获取URL字符串
-    // char *url = argv[2];
-    // // 从命令行参数中获取参数字符串
-    // char *params = argv[3];
-    // // 从命令行参数中获取参数字符串
-    // char *content = argv[4];
+    char *method = argv[1];
+    // 从命令行参数中获取URL字符串
+    char *url = argv[2];
+    // 从命令行参数中获取参数字符串
+    char *params = argv[3];
+    // 从命令行参数中获取参数字符串
+    char *content = argv[4];
     //body缓冲区
     char *body = (char *)malloc(40960);
     //header缓冲区
